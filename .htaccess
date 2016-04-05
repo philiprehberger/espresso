@@ -1,0 +1,4 @@
+RewriteEngine on
+RewriteCond $1 !^(index\.php|assets|public|start|images|PHPExcel|robots\.txt)
+RewriteRule ^(.*)$ /espresso/index.php/$1 [L]
+
