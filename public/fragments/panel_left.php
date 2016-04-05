@@ -10,7 +10,6 @@
                         echo '<img data-reset_item="src" data-reset_value="" class="reset profile-thumbnail" src="/assets/uploads/files/' . $_SESSION['image_id'] . '" />';
                     }
                     ?>
-
                 </div>
             </div>
             <div class='col-xs-8'>
