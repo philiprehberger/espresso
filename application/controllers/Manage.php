@@ -62,7 +62,7 @@ class Manage extends CI_Controller {
         $crud->set_subject('Products');
         $crud->where('products.deleted_on IS NULL');
         $crud->columns('product_id', 'image_id', 'name', 'category_id', 'updated_on', 'updated_by');
-        $crud->fields('name', 'category_id', 'sales_price','active', 'description', 'image_id');
+        $crud->fields('name', 'category_id', 'sales_price','active','sizes', 'description', 'image_id');
         $crud->display_as('updated_on', 'Updated')
                 ->display_as('updated_by', 'Updated By')
                 ->display_as('created_on', 'Created')
@@ -73,6 +73,7 @@ class Manage extends CI_Controller {
                 ->display_as('active', 'State');
         $crud->set_relation('category_id', 'categories', 'name');
         $crud->set_relation('created_by', 'users', 'username');
+        $crud->set_relation_n_n('sizes', 'product_sizes', 'sizes','product_id','size_id','name');
         $crud->set_relation('updated_by', 'users', 'username');
         $crud->set_relation('deleted_by', 'users', 'username');
         $crud->set_field_upload('image_id', 'assets/uploads/files');

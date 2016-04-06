@@ -18,6 +18,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <title>Manage</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <?php foreach ($css_files as $file): ?>
@@ -46,15 +47,17 @@
                 display:none;
             }
             .ftitle{
-                height:40px;
-                font-size:16pt;
-                padding-top:20px !important;
-                text-align:center;
+                height: 20px;
+                font-size: 16pt;
+                padding-top: 6px !important;
+                text-align: center;
+                font-weight: 300;
+                cursor:pointer;
             }
         </style>
     </head>
-    <body>
-
+    <body >
+        <button class="btn_home">home</button>
         <div style='height:20px;'></div>  
         <div id="gcrud_container">
             <?php echo $output; ?>
@@ -100,7 +103,12 @@
 
             }
         });
-        $('#gcrud_container').slideDown(500)
+        $('#gcrud_container').slideDown(500);
+        $('.btn_home').on({
+           click:function(){
+               window.location = 'http://espresso.dcsuniverse.com';
+           } 
+        });
     });
 
     function set_table_titles() {

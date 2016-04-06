@@ -46,9 +46,9 @@ class Page {
         $pageDATA['scriptDATA'] = self::get_files($types);
         $pageDATA['userDATA'] = $CI->session->all_userdata();
         $pageDATA['sessionDATA'] = $CI->session;
-        if($page === 'home'){
+        if ($page === 'home') {
             $pageDATA['products'] = self::get_products();
-        }else{
+        } else {
             $pageDATA['products'] = self::get_products_flat();
         }
         return $pageDATA;
@@ -57,7 +57,7 @@ class Page {
     static private function get_types($page) {
         //echo $page; exit();
         $pages = array(
-            'home' => array('jquery', 'jquery_mobile', 'noty', 'ckeditor', 'md5', 'core', 'theme'),
+            'home' => array('jquery', 'jquery_mobile', 'noty', 'md5', 'core', 'theme'),
             'main' => array('jquery', 'jquery_mobile', 'noty', 'ckeditor', 'md5', 'core', 'theme'),
             'login' => array('jquery', 'jquery_mobile', 'noty', 'ckeditor', 'md5', 'core', 'theme'),
             'my_manage' => array('theme'),
@@ -117,22 +117,52 @@ class Page {
         $CI->db->select('`products`.`product_id`');
         $CI->db->select('`products`.`tax_group_id`');
         $CI->db->select('categories.name AS category');
+        $CI->db->select('sizes.name AS size_name');
+        $CI->db->select('sizes.size_id AS size_id');
+        $CI->db->select('sizes.description AS size_description');
+        $CI->db->select('product_size_prices.price AS size_price');
+        
         $CI->db->from('products');
         $CI->db->join('categories', 'categories.category_id=products.category_id', 'LEFT');
-        $CI->db->where('products.deleted_on IS NULL');
+        $CI->db->join('product_sizes', 'product_sizes.product_id=products.product_id', 'LEFT');
+       $CI->db->join('sizes', 'sizes.size_id=product_sizes.size_id', 'LEFT');
+         $CI->db->join('product_size_prices', 'product_size_prices.product_id=products.product_id AND product_size_prices.size_id = sizes.size_id', 'LEFT');
+        
+         $CI->db->where('products.deleted_on IS NULL');
         $CI->db->where('products.active = 1');
-        $CI->db->order_by('categories.name,products.name');
+
+        $CI->db->order_by('categories.name,products.name,sizes.size_id');
         $results = $CI->db->get();
         if ($results !== FALSE && $results->num_rows() > 0) {
-          foreach($results->result() AS $row){
-              if(isset($pageDATA[$row->category]) === FALSE){
-                  $pageDATA[$row->category]=array(
-                      'category_id' => $row->category_id,
-                      'items' => array()
-                  );
-              }
-              $pageDATA[$row->category]['items'][]=$row;
-          }
+            foreach ($results->result() AS $row) {
+                if (isset($pageDATA[$row->category]) === FALSE) {
+                    $pageDATA[$row->category] = array(
+                        'category_id' => $row->category_id,
+                        'items' => array()
+                    );
+                }
+                if (isset($pageDATA[$row->category]['items'][$row->product_id]) === FALSE) {
+                    $pageDATA[$row->category]['items'][$row->product_id] = array(
+                        'image' => $row->image,
+                        'description' => $row->description,
+                        'category_id' => $row->category_id,
+                        'name' => $row->name,
+                        'price' => $row->price,
+                        'product_id' => $row->product_id,
+                        'tax_group_id' => $row->tax_group_id,
+                        'category' => $row->category,
+                        'sizes' => array()
+                    );
+                }
+                if (isset($row->size_id) === TRUE) {
+                    $pageDATA[$row->category]['items'][$row->product_id]['sizes'][] = array(
+                        'name' => $row->size_name,
+                        'description' => $row->size_description,
+                        'size_id' => $row->size_id,
+                        'price' => $row->size_price
+                    );
+                }
+            }
         }
 
         if (count($errors) === 0) {
@@ -140,6 +170,7 @@ class Page {
         }
         return $errors;
     }
+
     static public function get_products_flat() {
         $errors = array();
         $pageDATA = array();
@@ -160,7 +191,7 @@ class Page {
         $CI->db->order_by('categories.name,products.name');
         $results = $CI->db->get();
         if ($results !== FALSE && $results->num_rows() > 0) {
-            $pageDATA = $results->result();    
+            $pageDATA = $results->result();
         }
         if (count($errors) === 0) {
             return $pageDATA;

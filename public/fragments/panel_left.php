@@ -36,8 +36,8 @@
     <?php if (isset($_SESSION['user_type_id']) === TRUE && $_SESSION['user_type_id'] === 1) { ?>
         <ul class="remove " data-role="listview" data-inset="false">
             <li data-role="list-divider">Manage</li>
-            <li ><a href="/manage" class="waves-effect waves-button waves-effect waves-button">All</a></li>
-            <li ><a href="/manage/products" class="waves-effect waves-button waves-effect waves-button">Products</a></li>
+            <li ><a href="#" class="btn_manage_all waves-effect waves-button waves-effect waves-button">All</a></li>
+            <li ><a href="#" class="waves-effect waves-button waves-effect waves-button">Products</a></li>
         </ul>
         <div class="remove" data-role="collapsible" data-inset="false"  data-collapsed-icon="carat-d" data-expanded-icon="carat-d" data-iconpos="right">
             <h3>Reports</h3>

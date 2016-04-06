@@ -12,9 +12,9 @@
             /* Prevent FOUC */
             body { opacity: 0; }
             .item_rate{
-               /* position: absolute;
-                right: 115px;
-                top: 20px;*/
+                /* position: absolute;
+                 right: 115px;
+                 top: 20px;*/
             }
             .item_rate .x,
             .item_rate .qty{
@@ -30,6 +30,7 @@
             }
             .order_item  {
                 border-bottom:1px solid #DDDDDD;
+                border-top:1px solid #DDDDDD;
             }
             .nd2Tabs-content-tab ul.ui-listview li:nth-child(2){
                 border-top:1px solid #DDDDDD;
@@ -70,17 +71,61 @@
             #tbl_order tfoot td:nth-child(4){
                 font-weight: 800;
             }
-             #tbl_order thead th:nth-child(1){
+            #tbl_order thead th:nth-child(1){
                 text-align: left;
             }
             .qty_grp{
                 display:flex;
             }
             #title_subtotal{
-                    position: absolute;
-    right: -40px;
-    top: 50px;
+                position: absolute;
+                right: -40px;
+                top: 50px;
             }
+            .product_description{
+                margin-right:100px !important;
+                white-space: initial !important;
+            }
+            .grp_btns_inline{
+                display:flex;
+            }
+            .grp_btns_inline .ui-input-text:after,
+            .grp_btns_inline .ui-input-text,
+            .grp_btns_inline .ui-input-text input{
+                width:100px !important;
+            }
+            .grp_btns_inline label{
+                width:75px;
+                margin-right:10px;
+                text-align: center;
+            }
+            .btn_size_minus,
+            .btn_size_plus{
+                border-radius: 0 !important;
+                width:45px;
+                height:45px;
+                border:solid 1px #FFFFFF !important;
+                    
+    padding-top: 0px;
+    padding-bottom: 0px;
+    
+    color: #FFFFFF !important;
+                
+            }
+            .btn_size_minus {
+                background-color: rgba(178,34,34,.6) !important;
+                font-size: 38px;
+                padding-left: 15.5px;
+    padding-right: 15.5px;
+    line-height: 1px;
+            }
+            .btn_size_plus {
+                font-size: 36px;
+                padding-left: 11.5px;
+    padding-right: 11.5px;
+                    background-color: rgba(0, 148, 133,.6) !important;
+            }
+
         </style>
     </head>
     <body class="clr-accent-lime">
@@ -118,22 +163,40 @@
                         echo '<ul data-role="listview" data-icon="false">';
                         echo '<li data-role="list-divider">' . $k . '</li>';
                         foreach ($v['items'] AS $item) {
-                            $products_by_id[$item->product_id] = $item;
-                            echo '<li id="product_id_' . $item->product_id . '" class="order_item" data-product_id="' . $item->product_id . '" >';
+                            $products_by_id[$item['product_id']] = $item;
+                            echo '<li id="product_id_' . $item['product_id'] . '" class="order_item" data-product_id="' . $item['product_id'] . '" >';
                             echo '<a class="btn_qty_add" href="#">';
-                            echo '<img src="/assets/uploads/files/' . $item->image . '" class="ui-thumbnail ui-thumbnail-circular" />';
-                            echo '<h2>' . $item->name . '</h2>';
-                            echo '<p>' . $item->description . '</p>';
-                            echo '<table class="item_rate">';
-                            echo '<tr>';
-                            echo '<td class="qty"></td>';
-                            echo '<td class="x">x</td>';
-                            echo '<td class="rate">$' . number_format($item->price, 2) . '</td>';
-                            echo '</tr>';
-                            echo '</table>';
+                            echo '<img src="/assets/uploads/files/' . $item['image'] . '" class="ui-thumbnail ui-thumbnail-circular" />';
+                            echo '<h2>' . $item['name'] . '</h2>';
+                            echo '<p class="product_description">' . $item['description'] . '</p>';
+                            if (is_array($item['sizes']) === FALSE || count($item['sizes']) === 0) {
+                                echo '<table class="item_rate">';
+                                echo '<tr>';
+                                echo '<td class="qty"></td>';
+                                echo '<td class="x">x</td>';
+                                echo '<td class="rate">$' . number_format($item['price'], 2) . '</td>';
+                                echo '</tr>';
+                                echo '</table>';
+                            }
 
                             echo '</a>';
                             echo '<a style="display:none;" class="btn_qty_minus ui-btn ui-btn-icon-notext ui-icon-minus waves-effect waves-button" title="remove 1"></a>';
+                            echo '</li>';
+                            if (is_array($item['sizes']) === TRUE && count($item['sizes']) > 0) {
+                                echo '<li id="product_sizes_' . $item['product_id'] . '" style="display:none;" class="product_size_options" data-product_id="' . $item['product_id'] . '" >';
+                                foreach ($item['sizes'] AS $sizeDATA) {
+                                    echo '<div class="grp_btns_inline ">';
+                                    echo '<label>';
+                                    echo $sizeDATA['name'];
+                                    echo '<br>';
+                                    echo '$' . number_format($sizeDATA['price'], 2);
+                                    echo '</label>';
+                                    echo '<input id="product_sizes_' . $item['product_id'] . '" />';
+                                    echo '<button class="btn_size_minus ui-btn ui-btn-inline waves-effect waves-button waves-effect waves-button" data-product_id="' . $item['product_id'] . '">-</button>';
+                                    echo '<button class="btn_size_plus ui-btn ui-btn-inline waves-effect waves-button waves-effect waves-button">+</button>';
+                                    echo '</div>';
+                                }
+                            }
                             echo '</li>';
                         }
                         echo '</ul>';

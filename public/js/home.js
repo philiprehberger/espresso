@@ -52,6 +52,18 @@ jQuery.extend({
                 tap: function () {
                     var id = $(this).closest('li').attr('id');
                     var data = $('#' + id).data();
+                    if(typeof data.product_id !== 'undefined'){
+                        var elem = '#product_sizes_' + data.product_id;
+                        if($(elem).css('display') === 'none'){
+                            $(elem).slideDown();
+                        }else{
+                            $(elem).slideUp();
+                        }
+                        
+                    
+                    }
+                    
+                    
                     if (typeof data.qty === 'undefined') {
                         data.qty = 0;
                     }
@@ -106,6 +118,12 @@ jQuery.extend({
                 tap: function () {
                    jQuery.post.order(jQuery.order);
                    
+                }
+            });
+            $('.btn_manage_all').off().on({
+                tap: function () {
+                    console.info('btn_manage_all tap');
+                   window.location = 'http://espresso.dcsuniverse.com/manage'
                 }
             });
         },
